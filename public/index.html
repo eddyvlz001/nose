@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>MRL Woodworking Inc. | Quality You Can Trust</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;600;700;800;900&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css">
+<link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+
+<div id="loader"><div class="ld-logo">MRL<span>.</span></div><div class="ld-tag">Woodworking Inc.</div><div class="ld-bar"><div class="ld-fill"></div></div></div>
+<div id="cur"></div><div id="cur2"></div>
+
+<!-- SELECTOR DE IDIOMA (primera visita) -->
+<div id="langGate">
+  <div class="lg-card">
+    <div class="lg-logo">MRL<span>.</span></div>
+    <div class="lg-title">Elige tu idioma <span>/</span> Choose your language</div>
+    <div class="lg-btns">
+      <button class="lg-btn" id="lgEs"><i class="fas fa-flag"></i> Español</button>
+      <button class="lg-btn" id="lgEn"><i class="fas fa-flag"></i> English</button>
+    </div>
+  </div>
+</div>
+<script>if(localStorage.getItem('mrl_lang')){document.getElementById('langGate').classList.add('hidden')}</script>
+
+<div class="topbar">
+  <div class="tb-info">
+    <a id="tb-ph" href="#"><i class="fas fa-phone"></i><span id="tb-ph-v"></span></a>
+    <a id="tb-em" href="#"><i class="fas fa-envelope"></i><span id="tb-em-v"></span></a>
+    <a id="tb-ad" href="#"><i class="fas fa-map-marker-alt"></i><span id="tb-ad-v"></span></a>
+  </div>
+  <div class="tb-soc">
+    <a id="tb-fb" href="#" target="_blank"><i class="fab fa-facebook-f"></i></a>
+    <a id="tb-ig" href="#" target="_blank"><i class="fab fa-instagram"></i></a>
+    <a id="tb-yt" href="#" target="_blank"><i class="fab fa-youtube"></i></a>
+  </div>
+</div>
+
+<nav id="nav">
+  <div class="nav-logo">
+    <img id="navLogoImg" src="" alt="MRL Woodworking Inc." style="display:none">
+    <div class="nav-logo-fb" id="navLogoFb" style="flex-direction:column;gap:2px">
+      <div class="nav-logo-m">MRL <span>Woodworking</span></div>
+      <div class="nav-logo-s">Commercial &amp; Residential</div>
+    </div>
+  </div>
+  <ul class="nav-links">
+    <li><a href="#hero" data-i18n="nav.inicio">Inicio</a></li>
+    <li><a href="#services" data-i18n="nav.servicios">Servicios</a></li>
+    <li><a href="#about" data-i18n="nav.nosotros">Nosotros</a></li>
+    <li><a href="#gallery" data-i18n="nav.galeria">Galería</a></li>
+    <li><a href="#reviews" data-i18n="nav.resenas">Reseñas</a></li>
+    <li><a href="#location" data-i18n="nav.contacto">Contacto</a></li>
+  </ul>
+  <button class="lang-tog" id="langTog" title="Change language / Cambiar idioma">EN</button>
+  <a href="#location" class="nav-cta"><i class="fas fa-phone"></i> <span data-i18n="nav.cta">Contáctanos</span></a>
+  <div class="hamburger" id="hbg"><span></span><span></span><span></span></div>
+</nav>
+<div class="mmenu" id="mm">
+  <span class="mmenu-x" id="mmx"><i class="fas fa-times"></i></span>
+  <a href="#hero" class="mml" data-i18n="nav.inicio">Inicio</a>
+  <a href="#services" class="mml" data-i18n="nav.servicios">Servicios</a>
+  <a href="#about" class="mml" data-i18n="nav.nosotros">Nosotros</a>
+  <a href="#gallery" class="mml" data-i18n="nav.galeria">Galería</a>
+  <a href="#reviews" class="mml" data-i18n="nav.resenas">Reseñas</a>
+  <a href="#location" class="mml" data-i18n="nav.contacto">Contacto</a>
+  <button class="lang-tog-m" id="langTogM">EN</button>
+</div>
+
+<section id="hero" style="padding:0">
+  <div class="hc tl"></div><div class="hc br"></div>
+  <div class="swiper swiper-hero">
+    <div class="swiper-wrapper" id="heroSlides"></div>
+    <div class="swiper-pagination"></div>
+  </div>
+  <div class="h-prog"><div class="h-prog-fill" id="hpf"></div></div>
+  <div class="h-scroll" onclick="scrollTo(0,document.getElementById('services').offsetTop)">
+    <div class="h-scroll-mouse"></div><span data-i18n="hero.scroll">Scroll</span>
+  </div>
+</section>
+
+<section id="services">
+  <div class="tline"></div>
+  <div class="sec-hdr c rv">
+    <div class="sup" data-i18n="services.sup">Lo que hacemos</div>
+    <h2 class="sec-h"><span data-i18n="services.h2a">Nuestros </span><span data-i18n="services.h2b">Servicios</span></h2>
+    <p class="sec-sub" data-i18n="services.sub">Soluciones completas en carpintería y ebanistería para proyectos comerciales y residenciales en el sur de Florida. Haz clic en un servicio para ver más detalles.</p>
+  </div>
+  <div class="str-out"><div class="str" id="svcTrack"></div></div>
+</section>
+
+<!-- MODAL DE SERVICIO -->
+<div id="svcModal">
+  <div class="svm-wrap">
+    <span class="svm-x" id="svmX"><i class="fas fa-times"></i></span>
+    <img class="svm-img" id="svmImg" src="" alt="">
+    <div class="svm-body">
+      <div class="svm-icon" id="svmIcon"></div>
+      <div class="svm-title" id="svmTitle"></div>
+      <p class="svm-detail" id="svmDetail"></p>
+    </div>
+  </div>
+</div>
+
+<section id="about">
+  <div class="tline"></div>
+  <div class="ab-grid">
+    <div class="ab-imgs rv">
+      <img class="ab-img1" id="aImg1" src="" alt="MRL">
+      <img class="ab-img2" id="aImg2" src="" alt="MRL">
+      <div class="ab-badge"><div class="n" id="aYears">15</div><div class="l"><span data-i18n="about.badge1">Años de</span><br><span data-i18n="about.badge2">experiencia</span></div></div>
+    </div>
+    <div class="ab-txt rv" style="transition-delay:.15s">
+      <div class="sup" data-i18n="about.sup">Quiénes Somos</div>
+      <h2 class="sec-h"><span data-i18n="about.h2a">Artesanos de</span><br><span data-i18n="about.h2b">Madera &amp; Diseño</span></h2>
+      <p id="aP1"></p>
+      <p id="aP2"></p>
+      <div class="ab-tags">
+        <span class="ab-tag"><i class="fas fa-check-circle"></i> <span data-i18n="about.tag1">Garantía en trabajo</span></span>
+        <span class="ab-tag"><i class="fas fa-tools"></i> <span data-i18n="about.tag2">Materiales premium</span></span>
+        <span class="ab-tag"><i class="fas fa-clock"></i> <span data-i18n="about.tag3">Entrega a tiempo</span></span>
+        <span class="ab-tag"><i class="fas fa-home"></i> <span data-i18n="about.tag4">Comercial &amp; Residencial</span></span>
+      </div>
+      <a href="#location" class="btn-m" style="margin-bottom:24px"><span data-i18n="about.conocenos">Conócenos</span> <i class="fas fa-arrow-right"></i></a>
+      <div class="ab-stats">
+        <div class="ab-stat"><div class="n"><span class="cu" data-t="500">0</span><span>+</span></div><div class="l" data-i18n="about.statProyectos">Proyectos</div></div>
+        <div class="ab-stat"><div class="n"><span class="cu" data-t="98">0</span><span>%</span></div><div class="l" data-i18n="about.statSatisfaccion">Satisfacción</div></div>
+        <div class="ab-stat"><div class="n"><span class="cu" data-t="15">0</span><span>+</span></div><div class="l" data-i18n="about.statAnios">Años</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="gallery">
+  <div class="tline"></div>
+  <div class="gal-top rv">
+    <div><div class="sup" data-i18n="gallery.sup">Nuestro trabajo</div><h2 class="sec-h"><span data-i18n="gallery.h2a">Galería de </span><span data-i18n="gallery.h2b">Proyectos</span></h2></div>
+    <div class="gal-filters" id="galFilters"></div>
+  </div>
+  <div class="gal-grid rv" id="galGrid" style="transition-delay:.1s"></div>
+  <div class="gal-more-wrap"><button class="btn-m" id="galMoreBtn" style="display:none"><span data-i18n="gallery.loadMore">Ver más</span> <i class="fas fa-chevron-down"></i></button></div>
+</section>
+
+<!-- LIGHTBOX -->
+<div id="lb">
+  <div class="lb-wrap">
+    <span class="lb-x" id="lbX"><i class="fas fa-times"></i></span>
+    <div class="lb-img-c">
+      <img src="" alt="" id="lb-img">
+      <div class="lbc tl"></div><div class="lbc tr"></div><div class="lbc bl"></div><div class="lbc br"></div>
+      <div class="lb-scan"></div>
+    </div>
+    <span class="lb-nav-btn p" id="lbP"><i class="fas fa-chevron-left"></i></span>
+    <span class="lb-nav-btn n" id="lbN"><i class="fas fa-chevron-right"></i></span>
+    <div class="lb-bar">
+      <div class="lb-info-l"><span class="lb-chip" id="lbCat"></span><span class="lb-ttl" id="lbTtl"></span></div>
+      <span class="lb-cnt" id="lbCnt"></span>
+    </div>
+    <p class="lb-desc" id="lbDesc"></p>
+  </div>
+</div>
+
+<div id="cband">
+  <div class="cband-in">
+    <div class="cband-lbl" data-i18n="cband.lbl">Especialidades</div>
+    <div class="cband-track"><div class="cband-m" id="cBand"></div></div>
+  </div>
+</div>
+
+<section id="reviews">
+  <div class="tline"></div>
+  <div class="sec-hdr c rv">
+    <div class="sup" data-i18n="reviews.sup">Lo que dicen</div>
+    <h2 class="sec-h"><span data-i18n="reviews.h2a">Reseñas de </span><span data-i18n="reviews.h2b">Clientes</span></h2>
+    <p class="sec-sub" data-i18n="reviews.sub">La satisfacción de nuestros clientes es nuestra mejor carta de presentación.</p>
+  </div>
+  <div class="swiper swiper-rev"><div class="swiper-wrapper" id="revSlides"></div><div class="swiper-pagination"></div></div>
+</section>
+
+<section id="location">
+  <div class="tline"></div>
+  <div class="sec-hdr rv"><div class="sup" data-i18n="location.sup">Encuéntranos</div><h2 class="sec-h"><span data-i18n="location.h2a">Nuestra </span><span data-i18n="location.h2b">Ubicación</span></h2></div>
+  <div class="loc-grid">
+    <div class="cc rv">
+      <div class="ccard"><div class="ccard-ic"><i class="fas fa-phone"></i></div><div><div class="ccard-l" data-i18n="location.phone">Teléfono</div><div class="ccard-v" id="cPh"></div></div></div>
+      <div class="ccard"><div class="ccard-ic"><i class="fas fa-envelope"></i></div><div><div class="ccard-l" data-i18n="location.email">Email</div><div class="ccard-v" id="cEm"></div></div></div>
+      <div class="ccard"><div class="ccard-ic"><i class="fas fa-map-marker-alt"></i></div><div><div class="ccard-l" data-i18n="location.address">Dirección</div><div class="ccard-v" id="cAd"></div></div></div>
+      <div class="ccard"><div class="ccard-ic"><i class="fas fa-clock"></i></div><div><div class="ccard-l" data-i18n="location.hours">Horario</div><div class="ccard-v" id="cHr"></div></div></div>
+    </div>
+    <div class="map-w rv" style="transition-delay:.15s"><iframe id="mapFr" src="" allowfullscreen loading="lazy"></iframe></div>
+  </div>
+
+  <div class="cform-wrap rv">
+    <h3 class="cform-title" data-i18n="contact.formTitle">Envíanos un Mensaje</h3>
+    <form id="contactForm" class="cform" novalidate>
+      <input type="text" id="cfHp" name="company" style="position:absolute;left:-9999px" tabindex="-1" autocomplete="off">
+      <div class="cform-row">
+        <div class="cform-field"><label data-i18n="contact.name">Nombre</label><input type="text" id="cfName" required></div>
+        <div class="cform-field"><label data-i18n="contact.email">Correo</label><input type="email" id="cfEmail" required></div>
+      </div>
+      <div class="cform-field"><label data-i18n="contact.phone">Teléfono (opcional)</label><input type="text" id="cfPhone"></div>
+      <div class="cform-field"><label data-i18n="contact.message">Mensaje</label><textarea id="cfMessage" rows="4" required></textarea></div>
+      <button type="submit" class="btn-p" id="cfSubmit"><i class="fas fa-paper-plane"></i> <span data-i18n="contact.send">Enviar Mensaje</span></button>
+      <div class="cform-msg" id="cfMsg"></div>
+    </form>
+  </div>
+</section>
+
+<div class="ftr-cta">
+  <h2><span data-i18n="footerCta.h2a">¿Listo para tu </span><span data-i18n="footerCta.h2b">próximo proyecto?</span></h2>
+  <a href="#location" class="btn-w"><i class="fas fa-phone"></i> <span data-i18n="footerCta.btn">Consulta Gratuita</span></a>
+</div>
+
+<footer>
+  <div class="ft-grid">
+    <div>
+      <div class="ft-logo">MRL <span>Woodworking</span></div>
+      <p class="ft-tag" data-i18n="footer.tagline">"We build with Quality You can trust!" — Expertos en carpintería comercial y residencial con más de 15 años de experiencia en el sur de Florida.</p>
+      <div class="ft-soc">
+        <a id="ft-fb" href="#" target="_blank"><i class="fab fa-facebook-f"></i></a>
+        <a id="ft-ig" href="#" target="_blank"><i class="fab fa-instagram"></i></a>
+        <a id="ft-yt" href="#" target="_blank"><i class="fab fa-youtube"></i></a>
+        <a id="ft-wa" href="#" target="_blank"><i class="fab fa-whatsapp"></i></a>
+      </div>
+    </div>
+    <div>
+      <div class="ft-ctitle" data-i18n="footer.servicios">Servicios</div>
+      <div class="ft-links">
+        <a href="#services" data-i18n="footer.link1">Madera &amp; Melamina</a><a href="#services" data-i18n="footer.link2">Closets Custom</a>
+        <a href="#services" data-i18n="footer.link3">Gabinetes</a><a href="#services" data-i18n="footer.link4">Escaleras</a>
+        <a href="#services" data-i18n="footer.link5">Pisos &amp; Molduras</a><a href="#services" data-i18n="footer.link6">Decks</a>
+      </div>
+    </div>
+    <div>
+      <div class="ft-ctitle" data-i18n="footer.navegacion">Navegación</div>
+      <div class="ft-links">
+        <a href="#hero" data-i18n="nav.inicio">Inicio</a><a href="#about" data-i18n="nav.nosotros">Nosotros</a>
+        <a href="#gallery" data-i18n="nav.galeria">Galería</a><a href="#reviews" data-i18n="nav.resenas">Reseñas</a><a href="#location" data-i18n="nav.contacto">Contacto</a>
+      </div>
+    </div>
+    <div>
+      <div class="ft-ctitle" data-i18n="footer.contacto">Contacto</div>
+      <div class="ft-ci"><i class="fas fa-phone"></i><span id="ft-ph-v2"></span></div>
+      <div class="ft-ci"><i class="fas fa-envelope"></i><span id="ft-em-v2"></span></div>
+      <div class="ft-ci"><i class="fas fa-map-marker-alt"></i><span id="ft-ad-v2"></span></div>
+    </div>
+  </div>
+  <div class="ft-bot"><p>&copy; 2025 <span>MRL Woodworking Inc.</span> — <span data-i18n="footer.rights">Todos los derechos reservados.</span></p><p><span data-i18n="footer.designed1">Diseñado con</span> <span>♥</span> <span data-i18n="footer.designed2">por MRL Team</span></p></div>
+</footer>
+
+<a class="wa" id="waBtn" href="#" target="_blank"><i class="fab fa-whatsapp"></i><span class="wa-tip" data-i18n="wa.tooltip">¡Escríbenos ahora!</span></a>
+
+<script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+<script src="/js/i18n.js"></script>
+<script src="/js/site.js"></script>
+</body>
+</html>

@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Panel de Administración | MRL Woodworking</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;600;700;800;900&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<link rel="stylesheet" href="/css/style.css">
+<link rel="stylesheet" href="/css/admin.css">
+</head>
+<body>
+
+<!-- LOGIN -->
+<div class="adm-login-wrap" id="loginView">
+  <div class="adm-login-card">
+    <div class="adm-login-icon"><i class="fas fa-lock"></i></div>
+    <h1>Panel de Administración</h1>
+    <p>MRL Woodworking — Editor de Sitio</p>
+    <div class="adm-login-err" id="lErr"><i class="fas fa-exclamation-circle"></i> Credenciales incorrectas</div>
+    <div class="df"><label>Correo</label><input type="email" id="lEm" placeholder="admin@mrlwoodworking.com" autocomplete="email"></div>
+    <div class="df"><label>Contraseña</label><input type="password" id="lPw" placeholder="••••••••" autocomplete="current-password"></div>
+    <button class="adm-login-btn" id="lBtn"><i class="fas fa-sign-in-alt" style="margin-right:6px"></i>Ingresar</button>
+    <a href="/">← Volver al sitio</a>
+  </div>
+</div>
+
+<!-- DASHBOARD -->
+<div id="dashView" style="display:none">
+  <div class="adm-topbar">
+    <div class="adm-brand">MRL<span>.</span> Admin<small>Editor de Sitio</small></div>
+    <div class="adm-actions">
+      <a class="adm-btn-ghost" href="/" target="_blank"><i class="fas fa-arrow-up-right-from-square"></i> Ver sitio</a>
+      <button class="adm-btn-danger" id="dLogout"><i class="fas fa-sign-out-alt"></i> Salir</button>
+    </div>
+  </div>
+
+  <div class="adm-shell">
+    <div class="adm-side">
+      <div class="adm-side-grp">Contenido bilingüe</div>
+      <div class="adm-tab on" data-p="hero"><i class="fas fa-panorama"></i> Hero</div>
+      <div class="adm-tab" data-p="servicios"><i class="fas fa-hammer"></i> Servicios</div>
+      <div class="adm-tab" data-p="galeria"><i class="fas fa-images"></i> Galería</div>
+      <div class="adm-tab" data-p="nosotros"><i class="fas fa-users"></i> Nosotros</div>
+      <div class="adm-tab" data-p="resenas"><i class="fas fa-star"></i> Reseñas</div>
+
+      <div class="adm-side-grp">Diseño</div>
+      <div class="adm-tab" data-p="colores"><i class="fas fa-palette"></i> Colores</div>
+      <div class="adm-tab" data-p="logo"><i class="fas fa-image"></i> Logo</div>
+
+      <div class="adm-side-grp">Configuración</div>
+      <div class="adm-tab" data-p="general"><i class="fas fa-address-card"></i> Contacto</div>
+      <div class="adm-tab" data-p="social"><i class="fas fa-share-nodes"></i> Social</div>
+    </div>
+
+    <div class="adm-main">
+
+      <!-- HERO -->
+      <div class="adm-panel on" id="p-hero">
+        <div class="adm-panel-title"><i class="fas fa-panorama"></i>Slides del Hero</div>
+        <p class="adm-panel-sub">Agrega, edita o elimina las imágenes principales que rotan en la portada. Escribe cada texto en español 🇪🇸 e inglés 🇺🇸 — cada slide se guarda al instante.</p>
+        <div id="hero-f"></div>
+      </div>
+
+      <!-- SERVICIOS -->
+      <div class="adm-panel" id="p-servicios">
+        <div class="adm-panel-title"><i class="fas fa-hammer"></i>Servicios</div>
+        <p class="adm-panel-sub">Cada servicio abre un modal en el sitio con foto y la descripción detallada que escribas aquí, en ambos idiomas.</p>
+        <div id="svc-f"></div>
+      </div>
+
+      <!-- GALERIA -->
+      <div class="adm-panel" id="p-galeria">
+        <div class="adm-panel-title"><i class="fas fa-images"></i>Galería de Proyectos</div>
+        <p class="adm-panel-sub">Imágenes comprimidas automáticamente. Cada proyecto se guarda al instante y se ve para todos los visitantes, en el idioma que hayan elegido.</p>
+        <div id="gal-f"></div>
+      </div>
+
+      <!-- NOSOTROS -->
+      <div class="adm-panel settings-panel" id="p-nosotros">
+        <div class="adm-panel-title"><i class="fas fa-users"></i>Sección Nosotros</div>
+        <p class="adm-panel-sub">Imágenes, estadísticas y los dos párrafos de presentación, en español e inglés.</p>
+        <div class="dsec">Imágenes</div>
+        <div class="grid2">
+          <div class="df"><label>Imagen principal</label><div id="aImg1-f"></div></div>
+          <div class="df"><label>Imagen secundaria</label><div id="aImg2-f"></div></div>
+        </div>
+        <div class="dsec">Textos</div>
+        <div class="df"><label>Años de experiencia</label><input type="number" id="s-aboutYears" style="max-width:160px"></div>
+        <div class="fp">
+          <div class="df"><label class="es">🇪🇸 Párrafo 1</label><textarea id="s-aboutP1Es" rows="3"></textarea></div>
+          <div class="df"><label class="en">🇺🇸 Paragraph 1</label><textarea id="s-aboutP1En" rows="3"></textarea></div>
+        </div>
+        <div class="fp">
+          <div class="df"><label class="es">🇪🇸 Párrafo 2</label><textarea id="s-aboutP2Es" rows="3"></textarea></div>
+          <div class="df"><label class="en">🇺🇸 Paragraph 2</label><textarea id="s-aboutP2En" rows="3"></textarea></div>
+        </div>
+        <div class="dsec">Estadísticas</div>
+        <div class="grid2">
+          <div class="df"><label>Proyectos</label><input type="number" id="s-statProjects"></div>
+          <div class="df"><label>% Satisfacción</label><input type="number" id="s-statSatisfaction"></div>
+        </div>
+        <div class="df" style="max-width:calc(50% - 8px)"><label>Años</label><input type="number" id="s-statYears"></div>
+      </div>
+
+      <!-- RESEÑAS -->
+      <div class="adm-panel" id="p-resenas">
+        <div class="adm-panel-title"><i class="fas fa-star"></i>Reseñas de Clientes</div>
+        <p class="adm-panel-sub">Agrega o elimina las reseñas que se muestran en el carrusel, en español e inglés.</p>
+        <div id="rev-f"></div>
+      </div>
+
+      <!-- COLORES -->
+      <div class="adm-panel settings-panel" id="p-colores">
+        <div class="adm-panel-title"><i class="fas fa-palette"></i>Colores de Marca</div>
+        <p class="adm-panel-sub">Cambia la paleta de colores del sitio. Se aplican en todo el diseño (botones, títulos, acentos).</p>
+        <div class="grid2">
+          <div class="df"><label>Primario (botones, enlaces)</label><input type="color" id="s-colorPrimary"></div>
+          <div class="df"><label>Secundario (detalles claros)</label><input type="color" id="s-colorSecondary"></div>
+          <div class="df"><label>Acento / Madera</label><input type="color" id="s-colorAccent"></div>
+          <div class="df"><label>Oscuro (textos, fondo navbar)</label><input type="color" id="s-colorDark"></div>
+        </div>
+      </div>
+
+      <!-- LOGO -->
+      <div class="adm-panel settings-panel" id="p-logo">
+        <div class="adm-panel-title"><i class="fas fa-image"></i>Logo</div>
+        <p class="adm-panel-sub">Si no subes un logo, el sitio muestra el nombre en texto. Imagen recomendada: fondo transparente, PNG.</p>
+        <div id="logo-f"></div>
+      </div>
+
+      <!-- GENERAL -->
+      <div class="adm-panel settings-panel" id="p-general">
+        <div class="adm-panel-title"><i class="fas fa-address-card"></i>Contacto</div>
+        <p class="adm-panel-sub">Estos datos aparecen en la barra superior, el pie de página y el botón de WhatsApp del sitio (no cambian con el idioma).</p>
+        <div class="grid2">
+          <div class="df"><label>Teléfono</label><input type="text" id="s-phone"></div>
+          <div class="df"><label>Email</label><input type="text" id="s-email"></div>
+        </div>
+        <div class="df"><label>Dirección</label><input type="text" id="s-address"></div>
+        <div class="df"><label>WhatsApp (solo números, con código de país)</label><input type="text" id="s-whatsapp" placeholder="13055551234"></div>
+        <div class="dsec">Horario</div>
+        <div class="fp">
+          <div class="df"><label class="es">🇪🇸 Horario</label><textarea id="s-hoursEs" rows="2"></textarea></div>
+          <div class="df"><label class="en">🇺🇸 Hours</label><textarea id="s-hoursEn" rows="2"></textarea></div>
+        </div>
+        <div class="dsec">Mapa</div>
+        <div class="df"><label>Google Maps Embed URL</label><textarea id="s-mapUrl" rows="3"></textarea></div>
+      </div>
+
+      <!-- SOCIAL -->
+      <div class="adm-panel settings-panel" id="p-social">
+        <div class="adm-panel-title"><i class="fas fa-share-nodes"></i>Redes Sociales</div>
+        <div class="df"><label>Facebook URL</label><input type="text" id="s-fbUrl"></div>
+        <div class="df"><label>Instagram URL</label><input type="text" id="s-igUrl"></div>
+        <div class="df"><label>YouTube URL</label><input type="text" id="s-ytUrl"></div>
+      </div>
+
+      <div id="settingsSaveBar">
+        <button class="dsave" id="saveSettingsBtn"><i class="fas fa-save"></i>Guardar Cambios</button>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<div id="toast"><i class="fas fa-check-circle"></i>¡Cambios guardados!</div>
+
+<script src="/js/admin.js"></script>
+</body>
+</html>

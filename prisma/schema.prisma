@@ -1,0 +1,101 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// Todos los campos de texto visibles para el visitante existen en dos
+// idiomas (sufijo Es/En). Los campos sin sufijo (imágenes, colores,
+// números, categorías internas) no dependen del idioma.
+
+model Project {
+  id             Int      @id @default(autoincrement())
+  titleEs        String   @default("")
+  titleEn        String   @default("")
+  categoryEs     String   @default("")
+  categoryEn     String   @default("")
+  descriptionEs  String   @default("")
+  descriptionEn  String   @default("")
+  imageUrl       String
+  cls            String   @default("")
+  position       Int      @default(0)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+}
+
+model HeroSlide {
+  id          Int      @id @default(autoincrement())
+  imageUrl    String
+  line1Es     String
+  line1En     String
+  line2Es     String
+  line2En     String
+  subtitleEs  String
+  subtitleEn  String
+  position    Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Service {
+  id             Int      @id @default(autoincrement())
+  icon           String   @default("fas fa-hammer")
+  imageUrl       String
+  titleEs        String
+  titleEn        String
+  descriptionEs  String
+  descriptionEn  String
+  detailEs       String   @default("")
+  detailEn       String   @default("")
+  position       Int      @default(0)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+}
+
+model Review {
+  id        Int      @id @default(autoincrement())
+  name      String
+  stars     Int      @default(5)
+  textEs    String
+  textEn    String
+  labelEs   String   @default("Cliente Verificado")
+  labelEn   String   @default("Verified Customer")
+  position  Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// Fila única (id = 1) con la configuración general del sitio: contacto,
+// colores de marca, logo, y textos/estadísticas de la sección "Nosotros".
+model Settings {
+  id                Int      @id @default(1)
+  phone             String   @default("(555) 123-4567")
+  email             String   @default("info@mrlwoodworking.com")
+  address           String   @default("123 Wood Ave, Miami, FL 33101")
+  hoursEs           String   @default("Lun – Vie: 8am – 6pm\nSáb: 9am – 3pm")
+  hoursEn           String   @default("Mon – Fri: 8am – 6pm\nSat: 9am – 3pm")
+  whatsapp          String   @default("13055551234")
+  mapUrl            String   @default("")
+  fbUrl             String   @default("#")
+  igUrl             String   @default("#")
+  ytUrl             String   @default("#")
+  logoUrl           String   @default("")
+  colorPrimary      String   @default("#1E4DB5")
+  colorSecondary    String   @default("#5B8FD4")
+  colorAccent       String   @default("#B07940")
+  colorDark         String   @default("#0D1F3D")
+  aboutYears        Int      @default(15)
+  aboutImg1         String   @default("")
+  aboutImg2         String   @default("")
+  aboutP1Es         String   @default("")
+  aboutP1En         String   @default("")
+  aboutP2Es         String   @default("")
+  aboutP2En         String   @default("")
+  statProjects      Int      @default(500)
+  statSatisfaction  Int      @default(98)
+  statYears         Int      @default(15)
+  updatedAt         DateTime @updatedAt
+}
