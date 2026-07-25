@@ -360,6 +360,22 @@ footer::after{content:'';position:absolute;bottom:-200px;right:-200px;width:500p
 .wa:hover .wa-tip{opacity:1;transform:translateX(0)}
 @keyframes wap{0%{box-shadow:0 4px 20px rgba(37,211,102,.45),0 0 0 0 rgba(37,211,102,.3)}70%{box-shadow:0 4px 20px rgba(37,211,102,.45),0 0 0 16px rgba(37,211,102,0)}100%{box-shadow:0 4px 20px rgba(37,211,102,.45),0 0 0 0 rgba(37,211,102,0)}}
 
+/* BARRA FLOTANTE DE REDES SOCIALES (lateral izquierdo) */
+.side-soc{position:fixed;left:20px;top:50%;transform:translateY(-50%);z-index:800;display:flex;flex-direction:column;gap:14px}
+.side-soc a{width:52px;height:52px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:21px;color:#fff;box-shadow:0 6px 18px rgba(0,0,0,.28);transition:all .3s}
+.side-soc a:hover{transform:scale(1.12) translateX(4px)}
+#side-fb{background:#1877F2}
+#side-ig{background:linear-gradient(45deg,#f9ce34,#ee2a7b,#6228d7)}
+#side-yt{background:#FF0000}
+@media(max-width:900px){
+  .side-soc{left:12px;gap:10px}
+  .side-soc a{width:42px;height:42px;font-size:17px}
+}
+@media(max-width:600px){
+  .side-soc{left:auto;right:30px;top:auto;bottom:100px;transform:none;gap:10px}
+  .side-soc a{width:42px;height:42px;font-size:17px}
+}
+
 /* REVEAL ANIMS */
 .rv{opacity:0;transform:translateY(30px);transition:opacity .7s var(--ease),transform .7s var(--ease)}
 .rv.in{opacity:1;transform:translateY(0)}

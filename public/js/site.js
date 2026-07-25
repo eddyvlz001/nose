@@ -53,9 +53,10 @@ function applyGeneral(){
   const social = { fb: s.fbUrl, ig: s.igUrl, yt: s.ytUrl };
   Object.keys(social).forEach(k => {
     const u = social[k] || '#';
-    const tb = g('tb-' + k), ft = g('ft-' + k);
+    const tb = g('tb-' + k), ft = g('ft-' + k), side = g('side-' + k);
     if (tb) tb.href = u;
     if (ft) ft.href = u;
+    if (side) side.href = u;
   });
 
   const logoImg = g('navLogoImg');
