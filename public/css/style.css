@@ -374,17 +374,25 @@ footer::after{content:'';position:absolute;bottom:-200px;right:-200px;width:500p
   .gal-grid{grid-template-columns:repeat(2,1fr)}
   .gi.wide{grid-column:span 1}
   .str-out{margin:0 -20px}
+  .str-out::before,.str-out::after{width:60px}
+  .str{animation-duration:65s}
   .hc{display:none}
   .s-ct{padding:0 5% 0 5%}
   .lb-nav-btn.p{left:-48px}.lb-nav-btn.n{right:-48px}
 }
 @media(max-width:600px){
-  .gal-grid{grid-template-columns:1fr}
-  .gi.tall{grid-row:span 1}
+  /* Galería: en vez de apilar las fotos hacia abajo, se desliza horizontalmente */
+  .gal-grid{display:flex;grid-template-columns:none;overflow-x:auto;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;padding-bottom:10px}
+  .gal-grid::-webkit-scrollbar{height:5px}
+  .gal-grid::-webkit-scrollbar-thumb{background:var(--bd);border-radius:3px}
+  .gi{flex:0 0 78%;height:260px;scroll-snap-align:center}
   .ft-grid{grid-template-columns:1fr}
   .topbar{display:none}
   .cband-lbl{display:none}
   .lb-nav-btn{display:none}
   #lb-img{max-width:95vw}
   .svm-img{height:200px}
+  /* Servicios: el degradado blanco de los bordes achica para no tapar el texto en pantallas angostas */
+  .str-out::before,.str-out::after{width:34px}
+  .str{animation-duration:55s}
 }

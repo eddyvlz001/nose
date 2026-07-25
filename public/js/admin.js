@@ -404,7 +404,6 @@ function buildGalleryAdmin(){
       const descriptionEs = gf.querySelector(`.pj-desc-es[data-id="${id}"]`).value.trim();
       const descriptionEn = gf.querySelector(`.pj-desc-en[data-id="${id}"]`).value.trim();
       const cls = gf.querySelector(`.pj-cls[data-id="${id}"]`).value;
-      if (!titleEs || !titleEn || !categoryEs || !categoryEn) { alert('Título y categoría son obligatorios en ambos idiomas'); return; }
       const payload = { titleEs, titleEn, categoryEs, categoryEn, descriptionEs, descriptionEn, cls };
       if (IMGS[key]) payload.imageUrl = IMGS[key];
       btn.disabled = true;
