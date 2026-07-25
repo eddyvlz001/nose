@@ -25,6 +25,7 @@ async function loadAll(){
 /* TEXTO ESTÁTICO (menú, títulos, botones) */
 function applyStaticI18n(){
   document.querySelectorAll('[data-i18n]').forEach(el => { el.textContent = t(el.dataset.i18n); });
+  document.querySelectorAll('[data-i18n-ph]').forEach(el => { el.placeholder = t(el.dataset.i18nPh); });
 }
 
 /* COLORES DE MARCA */
@@ -46,9 +47,7 @@ function applyGeneral(){
   g('ft-ph-v2').textContent = s.phone; g('ft-em-v2').textContent = s.email; g('ft-ad-v2').textContent = s.address;
   if (s.address) g('mapFr').src = 'https://www.google.com/maps?q=' + encodeURIComponent(s.address) + '&output=embed';
 
-  const waNumber = (s.whatsapp || '').replace(/\D/g, '');
-  const wa = 'https://wa.me/' + waNumber + '?text=' + encodeURIComponent(t('wa.message'));
-  g('waBtn').href = wa; g('ft-wa').href = wa;
+  g('ft-wa').href = 'https://wa.me/' + (s.whatsapp || '').replace(/\D/g, '') + '?text=' + encodeURIComponent(t('wa.message'));
 
   const social = { fb: s.fbUrl, ig: s.igUrl, yt: s.ytUrl };
   Object.keys(social).forEach(k => {
@@ -136,6 +135,30 @@ function initSvcModal(){
   g('svmX').addEventListener('click', closeSvcModal);
   g('svcModal').addEventListener('click', e => { if (e.target === g('svcModal')) closeSvcModal(); });
   document.addEventListener('keydown', e => { if (e.key === 'Escape') closeSvcModal(); });
+}
+
+/* WIDGET DE WHATSAPP (chat con asesor antes de abrir wa.me) */
+function initWaWidget(){
+  const btn = g('waBtn'), panel = g('waPanel'), closeBtn = g('waPanelX'), sendBtn = g('waSendBtn'), input = g('waMsgInput');
+  btn.addEventListener('click', () => {
+    panel.classList.toggle('open');
+    if (panel.classList.contains('open')) input.focus();
+  });
+  closeBtn.addEventListener('click', () => panel.classList.remove('open'));
+  document.addEventListener('click', e => {
+    if (panel.classList.contains('open') && !panel.contains(e.target) && e.target !== btn && !btn.contains(e.target)) {
+      panel.classList.remove('open');
+    }
+  });
+  function send(){
+    const msg = input.value.trim() || t('wa.message');
+    const waNumber = (SETTINGS.whatsapp || '').replace(/\D/g, '');
+    window.open('https://wa.me/' + waNumber + '?text=' + encodeURIComponent(msg), '_blank');
+    panel.classList.remove('open');
+    input.value = '';
+  }
+  sendBtn.addEventListener('click', send);
+  input.addEventListener('keydown', e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); send(); } });
 }
 
 /* GALERÍA + LIGHTBOX */
@@ -387,6 +410,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   initCursor();
   initLb();
   initSvcModal();
+  initWaWidget();
   initGalFilter();
   initScroll();
   initLangSwitcher();

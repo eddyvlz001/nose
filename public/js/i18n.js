@@ -32,7 +32,10 @@ const I18N = {
     'footer.navegacion': 'Navegación', 'footer.contacto': 'Contacto',
     'footer.rights': 'Todos los derechos reservados.', 'footer.designed1': 'Diseñado con', 'footer.designed2': 'por MRL Team',
     'wa.tooltip': '¡Escríbenos ahora!',
-    'wa.message': 'Hola MRL Woodworking, me interesa un presupuesto'
+    'wa.message': 'Hola MRL Woodworking, me interesa un presupuesto',
+    'wa.online': 'En línea',
+    'wa.greeting': '¡Hola! 👋 ¿En qué proyecto podemos ayudarte hoy?',
+    'wa.placeholder': 'Escribe tu mensaje...'
   },
   en: {
     'nav.inicio': 'Home', 'nav.servicios': 'Services', 'nav.nosotros': 'About',
@@ -67,7 +70,10 @@ const I18N = {
     'footer.navegacion': 'Navigation', 'footer.contacto': 'Contact',
     'footer.rights': 'All rights reserved.', 'footer.designed1': 'Designed with', 'footer.designed2': 'by the MRL Team',
     'wa.tooltip': 'Message us now!',
-    'wa.message': "Hi MRL Woodworking, I'm interested in a quote"
+    'wa.message': "Hi MRL Woodworking, I'm interested in a quote",
+    'wa.online': 'Online',
+    'wa.greeting': "Hi there! 👋 What project can we help you with today?",
+    'wa.placeholder': 'Type your message...'
   }
 };
 

@@ -253,7 +253,26 @@
   <div class="ft-bot"><p>&copy; 2025 <span>MRL Woodworking Inc.</span> — <span data-i18n="footer.rights">Todos los derechos reservados.</span></p><p><span data-i18n="footer.designed1">Diseñado con</span> <span>♥</span> <span data-i18n="footer.designed2">por MRL Team</span></p></div>
 </footer>
 
-<a class="wa" id="waBtn" href="#" target="_blank"><i class="fab fa-whatsapp"></i><span class="wa-tip" data-i18n="wa.tooltip">¡Escríbenos ahora!</span></a>
+<div class="wa-widget">
+  <div class="wa-panel" id="waPanel">
+    <div class="wa-panel-hdr">
+      <div class="wa-avatar"><i class="fab fa-whatsapp"></i></div>
+      <div>
+        <div class="wa-panel-name">MRL Woodworking</div>
+        <div class="wa-panel-status"><span class="wa-dot"></span><span data-i18n="wa.online">En línea</span></div>
+      </div>
+      <span class="wa-panel-x" id="waPanelX"><i class="fas fa-times"></i></span>
+    </div>
+    <div class="wa-panel-body">
+      <div class="wa-bubble" data-i18n="wa.greeting">¡Hola! 👋 ¿En qué proyecto podemos ayudarte hoy?</div>
+    </div>
+    <div class="wa-panel-input">
+      <textarea id="waMsgInput" rows="2" data-i18n-ph="wa.placeholder" placeholder="Escribe tu mensaje..."></textarea>
+      <button type="button" id="waSendBtn"><i class="fas fa-paper-plane"></i></button>
+    </div>
+  </div>
+  <button type="button" class="wa" id="waBtn"><i class="fab fa-whatsapp"></i><span class="wa-tip" data-i18n="wa.tooltip">¡Escríbenos ahora!</span></button>
+</div>
 
 <div class="side-soc">
   <a id="side-fb" href="#" target="_blank"><i class="fab fa-facebook-f"></i></a>
