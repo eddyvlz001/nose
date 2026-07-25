@@ -14,11 +14,11 @@ function authHeaders(json){
 async function login(email, password){
   try {
     const r = await fetch('/api/auth/login', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email, password }) });
-    if (!r.ok) return false;
-    const data = await r.json();
+    const data = await r.json().catch(() => ({}));
+    if (!r.ok) return { ok: false, error: data.error || `Error del servidor (${r.status})` };
     sessionStorage.setItem('mrl_token', data.token);
-    return true;
-  } catch (e) { return false; }
+    return { ok: true };
+  } catch (e) { return { ok: false, error: 'No se pudo conectar con el servidor' }; }
 }
 function logout(){ sessionStorage.removeItem('mrl_token'); location.reload(); }
 
@@ -567,10 +567,15 @@ function initTabs(){
 async function tryLogin(){
   const email = g('lEm').value.trim(), password = g('lPw').value, err = g('lErr'), btn = g('lBtn');
   btn.disabled = true;
-  const ok = await login(email, password);
+  const result = await login(email, password);
   btn.disabled = false;
-  if (ok) { showDashboard(); }
-  else { err.style.display = 'block'; g('lPw').value = ''; setTimeout(() => err.style.display = 'none', 3500); }
+  if (result.ok) { showDashboard(); }
+  else {
+    err.innerHTML = `<i class="fas fa-exclamation-circle"></i> ${result.error}`;
+    err.style.display = 'block';
+    g('lPw').value = '';
+    setTimeout(() => err.style.display = 'none', 6000);
+  }
 }
 
 async function initDashboard(){
