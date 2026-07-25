@@ -44,7 +44,7 @@ function applyGeneral(){
   g('cPh').textContent = s.phone; g('cEm').textContent = s.email; g('cAd').textContent = s.address;
   g('cHr').innerHTML = (pick(s, 'hours') || '').replace(/\n/g, '<br>');
   g('ft-ph-v2').textContent = s.phone; g('ft-em-v2').textContent = s.email; g('ft-ad-v2').textContent = s.address;
-  if (s.mapUrl) g('mapFr').src = s.mapUrl;
+  if (s.address) g('mapFr').src = 'https://www.google.com/maps?q=' + encodeURIComponent(s.address) + '&output=embed';
 
   const wa = 'https://wa.me/' + s.whatsapp + '?text=' + encodeURIComponent(t('wa.message'));
   g('waBtn').href = wa; g('ft-wa').href = wa;

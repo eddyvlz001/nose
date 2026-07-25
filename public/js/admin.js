@@ -95,7 +95,7 @@ function populateSettingsForm(){
   const s = SETTINGS;
   sv('s-phone', s.phone); sv('s-email', s.email); sv('s-address', s.address);
   sv('s-hoursEs', s.hoursEs); sv('s-hoursEn', s.hoursEn);
-  sv('s-whatsapp', s.whatsapp); sv('s-mapUrl', s.mapUrl);
+  sv('s-whatsapp', s.whatsapp);
   sv('s-colorPrimary', s.colorPrimary); sv('s-colorSecondary', s.colorSecondary);
   sv('s-colorAccent', s.colorAccent); sv('s-colorDark', s.colorDark);
   sv('s-aboutYears', s.aboutYears);
@@ -112,7 +112,7 @@ async function saveSettings(){
   const payload = {
     phone: gv('s-phone'), email: gv('s-email'), address: gv('s-address'),
     hoursEs: gv('s-hoursEs'), hoursEn: gv('s-hoursEn'),
-    whatsapp: gv('s-whatsapp'), mapUrl: gv('s-mapUrl'),
+    whatsapp: gv('s-whatsapp'),
     colorPrimary: gv('s-colorPrimary'), colorSecondary: gv('s-colorSecondary'),
     colorAccent: gv('s-colorAccent'), colorDark: gv('s-colorDark'),
     aboutYears: parseInt(gv('s-aboutYears')) || 0,
