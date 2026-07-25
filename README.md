@@ -192,15 +192,31 @@ Pasos:
 
 4. **Crear las tablas en la base de datos**: la primera vez, corre esto en
    tu máquina (con Node instalado), apuntando a esa misma base:
+   Si `DATABASE_URL` quedó marcada como **Sensitive** en Vercel, ni el
+   dashboard ni `vercel env pull` te dejan ver su valor real — así que las
+   tablas se crean automáticamente en el propio despliegue: el script
+   `postinstall` de `package.json` corre `prisma db push` (sincroniza el
+   esquema) y `node prisma/seed.js` (carga el contenido inicial, solo si la
+   base está vacía) en cada instalación. No tienes que hacer nada extra,
+   basta con que el deploy termine bien.
+
+   Si en cambio sí tienes el `DATABASE_URL` real a mano (por ejemplo porque
+   lo marcaste como no-sensible, o tienes tu propia base Postgres), puedes
+   hacerlo desde tu PC en vez de depender del postinstall:
    ```bash
    npm install
-   # Pega el DATABASE_URL de Vercel/Neon en tu .env local
+   # Pega el DATABASE_URL en tu .env local
    npx prisma migrate dev --name init
    npm run seed
    ```
-   Esto crea las tablas y carga el contenido inicial (que luego puedes
-   editar todo desde `/admin`). Solo hace falta una vez — desde ahí en
-   adelante, la base ya existe y el sitio la usa directamente.
+
+   > **Nota:** correr `prisma db push` en cada deploy es práctico para
+   > arrancar rápido, pero sincroniza el esquema automáticamente sin pedir
+   > confirmación (`--accept-data-loss`). Una vez el sitio esté estable y
+   > con contenido real, conviene quitar `prisma db push` del
+   > `postinstall` y pasar a migraciones controladas
+   > (`prisma migrate dev` en local + `prisma migrate deploy` en el build)
+   > para no arriesgar datos por accidente en un cambio de esquema futuro.
 
 5. **Deploy**: Vercel despliega automáticamente con cada push a la rama
    principal. Tu sitio queda en la URL que te da Vercel (o tu dominio propio
