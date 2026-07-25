@@ -46,7 +46,8 @@ function applyGeneral(){
   g('ft-ph-v2').textContent = s.phone; g('ft-em-v2').textContent = s.email; g('ft-ad-v2').textContent = s.address;
   if (s.address) g('mapFr').src = 'https://www.google.com/maps?q=' + encodeURIComponent(s.address) + '&output=embed';
 
-  const wa = 'https://wa.me/' + s.whatsapp + '?text=' + encodeURIComponent(t('wa.message'));
+  const waNumber = (s.whatsapp || '').replace(/\D/g, '');
+  const wa = 'https://wa.me/' + waNumber + '?text=' + encodeURIComponent(t('wa.message'));
   g('waBtn').href = wa; g('ft-wa').href = wa;
 
   const social = { fb: s.fbUrl, ig: s.igUrl, yt: s.ytUrl };
