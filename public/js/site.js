@@ -117,11 +117,11 @@ function renderHero(){
 /* SERVICIOS */
 function renderServices(){
   const trk = g('svcTrack'); trk.innerHTML = '';
-  const all = [...SERVICES, ...SERVICES];
+  const all = window.matchMedia('(max-width: 650px)').matches ? SERVICES : [...SERVICES, ...SERVICES];
   all.forEach((s, i) => {
     const title = pick(s, 'title'), desc = pick(s, 'description');
     const c = document.createElement('div'); c.className = 'sc';
-    c.innerHTML = `<img src="${s.imageUrl}" alt="${title}" loading="lazy"><div class="sc-ov"></div><div class="sc-num">${String((i % SERVICES.length) + 1).padStart(2, '0')}</div><div class="sc-more"><i class="fas fa-plus"></i></div><div class="sc-body"><div class="sc-icon"><i class="${s.icon}"></i></div><div class="sc-title">${title}</div><p class="sc-desc">${desc}</p></div><div class="sc-line"></div>`;
+    c.innerHTML = `<img src="${s.imageUrl}" alt="${title}" loading="lazy" decoding="async"><div class="sc-ov"></div><div class="sc-num">${String((i % SERVICES.length) + 1).padStart(2, '0')}</div><div class="sc-more"><i class="fas fa-plus"></i></div><div class="sc-body"><div class="sc-icon"><i class="${s.icon}"></i></div><div class="sc-title">${title}</div><p class="sc-desc">${desc}</p></div><div class="sc-line"></div>`;
     c.addEventListener('click', () => openSvcModal(s));
     trk.appendChild(c);
   });
@@ -255,7 +255,7 @@ function renderGallery(){
     const title = pick(item, 'title') || (getLang() === 'en' ? 'Project' : 'Proyecto');
     const card = document.createElement('button'); card.type = 'button'; card.className = 'gi'; card.style.setProperty('--photo-order', Math.min(i, 7));
     card.setAttribute('aria-label', (getLang() === 'en' ? 'View: ' : 'Ver: ') + title);
-    const image = document.createElement('img'); image.src = item.imageUrl; image.alt = title; image.loading = i < 3 ? 'eager' : 'lazy';
+    const image = document.createElement('img'); image.decoding = 'async'; image.src = item.imageUrl; image.alt = title; image.loading = i < 3 ? 'eager' : 'lazy';
     const overlay = document.createElement('span'); overlay.className = 'gi-ov';
     const category = document.createElement('span'); category.className = 'gi-cat'; category.textContent = pick(item, 'category') || '';
     const heading = document.createElement('span'); heading.className = 'gi-t'; heading.textContent = title;
@@ -456,6 +456,27 @@ function initLangSwitcher(){
   g('langTogM').addEventListener('click', () => selectLanguage(getLang() === 'en' ? 'es' : 'en'));
 }
 
+/* Subtle desktop parallax, scheduled only when scrolling or resizing. */
+function initParallax(){
+  const hero = g('hero');
+  if (!hero) return;
+  const enabled = window.matchMedia('(min-width: 901px) and (hover: hover) and (prefers-reduced-motion: no-preference)');
+  let frame = 0;
+  function update(){
+    frame = 0;
+    hero.classList.toggle('has-parallax', enabled.matches);
+    if (!enabled.matches) { hero.style.removeProperty('--parallax-y'); return; }
+    const rect = hero.getBoundingClientRect();
+    const offset = Math.max(0, Math.min(-rect.top, rect.height)) * 0.12;
+    hero.style.setProperty('--parallax-y', offset.toFixed(2) + 'px');
+  }
+  function schedule(){ if (!frame) frame = requestAnimationFrame(update); }
+  window.addEventListener('scroll', schedule, {passive:true});
+  window.addEventListener('resize', schedule, {passive:true});
+  enabled.addEventListener('change', schedule);
+  update();
+}
+
 /* INIT */
 document.addEventListener('DOMContentLoaded', async () => {
   try {
@@ -464,6 +485,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     initReveal();
     initCounters();
     initNav();
+    initParallax();
     initLb();
     initSvcModal();
     initWaWidget();

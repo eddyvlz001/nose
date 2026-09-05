@@ -15,6 +15,7 @@ const app = express();
 
 app.use(cors());
 app.use(express.json({ limit: '15mb' }));
+app.use('/api', require('./middleware/compressJson'));
 
 app.use('/api/auth', authRoutes);
 app.use('/api/projects', projectsRoutes);

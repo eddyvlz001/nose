@@ -578,3 +578,36 @@ a:focus-visible,button:focus-visible,[tabindex]:focus-visible{outline:2px solid 
 .gallery-mosaic .gi-ov{padding:12px 9px 8px}
 .gallery-mosaic .gi img.mosaic-outgoing{inset:5px;width:calc(100% - 10px)}
 @media(prefers-reduced-motion:reduce){.ccard:hover,.ccard:hover .ccard-ic{transform:none}.gallery-mosaic .gi::after{transition:none}}
+
+/* Extra image bleed keeps the parallax background inside the hero at all times. */
+#hero.has-parallax .s-bg{inset:-15% -3%;translate:0 var(--parallax-y,0px)}
+@media(prefers-reduced-motion:reduce){#hero.has-parallax .s-bg{translate:none}}
+
+/* Mobile spacing and readable, touch-friendly controls. */
+@media(max-width:650px){
+  #hero{height:calc(100svh - 110px);min-height:540px;max-height:780px}
+  section{padding:54px 18px}
+  .s-ct{padding:28px 22px}.s-txt{width:100%}
+  .s-l1,.s-l2{font-size:clamp(36px,9vw,54px)}
+  .s-sub{font-size:14px;line-height:1.7;margin-bottom:24px}
+  .s-btns{gap:10px}.s-btns a{min-height:46px;padding:12px 18px}
+  .nav-logo img{height:54px}.hamburger{min-width:44px;min-height:44px;justify-content:center;align-items:center}
+  .sec-h{font-size:32px;line-height:1.15}.sec-hdr{margin-bottom:28px}
+  .ab-grid,.loc-grid{gap:28px}.ab-txt p{font-size:14px}
+  .str-out{margin:0;overflow-x:auto;scroll-snap-type:x mandatory;padding-bottom:10px}
+  .str-out::before,.str-out::after{display:none}
+  .str{animation:none;gap:14px;padding:4px 0;width:max-content}
+  .sc{width:min(76vw,280px);height:370px;scroll-snap-align:start}
+  .sc-body{padding:20px 18px}.sc-title{font-size:24px}.sc-desc{font-size:12px}
+  .cform-wrap{padding:24px 18px;margin-top:30px}.cform-row{grid-template-columns:1fr;gap:0}
+  .cform-field input,.cform-field textarea,.wa-panel-input textarea{font-size:16px}
+  .map-w iframe{height:300px}.ccard>div:last-child{min-width:0}
+  .ccard-v{font-size:13px}.ccard-ic{width:44px;height:44px}
+  .tb-soc{max-width:48%;flex-wrap:nowrap;overflow-x:auto}.tb-soc a{flex-shrink:0}
+  .topbar{padding-inline:18px}.tb-info{flex-shrink:0}
+  #gallery .gf{min-height:40px;padding:9px 11px;font-size:10px}
+  .gallery-mosaic .gi{margin-bottom:14px}.gallery-mosaic .gi-t{overflow-wrap:anywhere}
+  .ftr-cta{padding:36px 18px}.ftr-cta h2{font-size:32px}
+  .wa-panel{max-width:calc(100vw - 32px)}
+}
+@media(max-width:380px){.topbar{gap:8px;padding-inline:12px}.tb-info a:first-child{font-size:11px}.s-ct{padding-inline:18px}.s-btns a{padding-inline:13px;font-size:11px}}
