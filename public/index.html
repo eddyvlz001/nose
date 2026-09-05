@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>MRL Woodworking Inc. | Quality You Can Trust</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;600;700;800;900&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,400;6..72,500&family=Barlow:wght@400;600;700;800;900&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css">
 <link rel="stylesheet" href="/css/style.css">
@@ -13,7 +13,7 @@
 <body>
 
 <div id="loader"><div class="ld-logo">MRL<span>.</span></div><div class="ld-tag">Woodworking Inc.</div><div class="ld-bar"><div class="ld-fill"></div></div></div>
-<div id="cur"></div><div id="cur2"></div>
+
 
 <!-- SELECTOR DE IDIOMA (primera visita) -->
 <div id="langGate">
@@ -21,8 +21,8 @@
     <div class="lg-logo">MRL<span>.</span></div>
     <div class="lg-title">Elige tu idioma <span>/</span> Choose your language</div>
     <div class="lg-btns">
-      <button class="lg-btn" id="lgEs"><i class="fas fa-flag"></i> Español</button>
-      <button class="lg-btn" id="lgEn"><i class="fas fa-flag"></i> English</button>
+      <button class="lg-btn" id="lgEs">Español</button>
+      <button class="lg-btn" id="lgEn">English</button>
     </div>
   </div>
 </div>
@@ -142,7 +142,8 @@
     <div><div class="sup" data-i18n="gallery.sup">Nuestro trabajo</div><h2 class="sec-h"><span data-i18n="gallery.h2a">Galería de </span><span data-i18n="gallery.h2b">Proyectos</span></h2></div>
     <div class="gal-filters" id="galFilters"></div>
   </div>
-  <div class="gal-grid rv" id="galGrid" style="transition-delay:.1s"></div>
+  <div class="gal-grid rv gallery-mosaic" id="galGrid" style="transition-delay:.1s"></div>
+  <div class="gallery-controls"><button type="button" id="galleryPlay" aria-pressed="false">Pausar rotación</button></div>
   <div class="gal-more-wrap"><button class="btn-m" id="galMoreBtn" style="display:none"><span data-i18n="gallery.loadMore">Ver más</span> <i class="fas fa-chevron-down"></i></button></div>
 </section>
 
@@ -282,6 +283,7 @@
 
 <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
 <script src="/js/i18n.js"></script>
+<script src="/js/icon-catalog.js"></script>
 <script src="/js/site.js"></script>
 </body>
 </html>

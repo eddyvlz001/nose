@@ -82,6 +82,7 @@ model Settings {
   fbUrl             String   @default("#")
   igUrl             String   @default("#")
   ytUrl             String   @default("#")
+  socialLinks       Json?
   logoUrl           String   @default("")
   colorPrimary      String   @default("#1E4DB5")
   colorSecondary    String   @default("#5B8FD4")

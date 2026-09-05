@@ -1,7 +1,7 @@
 function g(id){ return document.getElementById(id) }
 function gv(id){ const e = g(id); return e ? e.value.trim() : '' }
 function sv(id, v){ const e = g(id); if (e) e.value = v ?? '' }
-function esc(str){ return (str || '').replace(/"/g, '&quot;') }
+function esc(str){ return String(str ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
 
 /* AUTH */
 function getToken(){ return sessionStorage.getItem('mrl_token') }
@@ -22,7 +22,7 @@ async function login(email, password){
 }
 function logout(){ sessionStorage.removeItem('mrl_token'); location.reload(); }
 
-function showToast(){ const t = g('toast'); t.style.display = 'flex'; setTimeout(() => t.style.display = 'none', 2800); }
+let toastTimer; function showToast(){ const t = g('toast'); t.style.display = 'flex'; clearTimeout(toastTimer); toastTimer = setTimeout(() => t.style.display = 'none', 2800); if (typeof renderOverview === 'function') renderOverview(); }
 
 function emptyState(icon, msg){
   return `<div class="empty-state"><i class="fas ${icon}"></i>${msg}</div>`;
@@ -42,7 +42,30 @@ function dataUrlBytes(dataUrl){ return dataUrl.length * 0.75; }
 // Comprime probando calidades cada vez más bajas y, si aun así pesa demasiado,
 // reduce el ancho y vuelve a intentar — hasta caber en IMG_MAX_BYTES o llegar
 // a un ancho mínimo razonable.
+let heicConverterPromise;
+function loadHeicConverter(){
+  if (typeof window.heic2any === 'function') return Promise.resolve(window.heic2any);
+  if (!heicConverterPromise) heicConverterPromise = new Promise((resolve, reject) => {
+    const script = document.createElement('script');
+    script.src = '/vendor/heic2any-0.0.4.min.js';
+    script.onload = () => {
+      if (typeof window.heic2any === 'function') resolve(window.heic2any);
+      else { script.remove(); heicConverterPromise = null; reject(new Error('No se pudo cargar el conversor HEIC.')); }
+    };
+    script.onerror = () => { script.remove(); heicConverterPromise = null; reject(new Error('No se pudo cargar el conversor HEIC. Revisa la conexión e intenta otra vez.')); };
+    document.head.append(script);
+  });
+  return heicConverterPromise;
+}
 async function compress(file, maxWidth){
+  if (/\.(heic|heif)$/i.test(file.name || '') || /^image\/hei[cf](?:-sequence)?$/i.test(file.type || '')) {
+    const converter = await loadHeicConverter();
+    try {
+      const converted = await converter({blob:file, toType:'image/jpeg', quality:0.9});
+      file = Array.isArray(converted) ? converted[0] : converted;
+      if (!file) throw new Error('Empty image');
+    } catch (_) { throw new Error('No se pudo convertir esta foto HEIC. Prueba exportarla como JPG desde Fotos.'); }
+  }
   return new Promise(res => {
     const r = new FileReader();
     r.onload = ev => {
@@ -74,8 +97,17 @@ async function handleUpload(input, key, mw){
   const btn = g('ubtn-' + key), meta = g('umeta-' + key), thumb = g('uthumb-' + key);
   if (btn) btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
   const orig = Math.round(file.size / 1024);
-  const comp = await compress(file, mw);
-  if (!comp) { if (btn) btn.innerHTML = '<i class="fas fa-cloud-upload-alt"></i> Subir'; return; }
+  if (btn) btn.disabled = true;
+  if (meta) { meta.className = 'imeta'; meta.textContent = 'Preparando imagen…'; }
+  let comp;
+  try {
+    comp = await compress(file, mw);
+    if (!comp) throw new Error('No se pudo leer esta imagen. Prueba con otro archivo.');
+  } catch (error) {
+    if (meta) meta.textContent = error.message;
+    if (btn) btn.innerHTML = '<i class="fas fa-cloud-upload-alt"></i> Subir';
+    input.value = ''; return;
+  } finally { if (btn) btn.disabled = false; }
   IMGS[key] = comp;
   if (thumb) { thumb.src = comp; thumb.classList.add('on'); }
   const sz = Math.round(dataUrlBytes(comp) / 1024);
@@ -85,12 +117,12 @@ async function handleUpload(input, key, mw){
 }
 function setThumb(key, src){ const t = g('uthumb-' + key); if (t && src) { t.src = src; t.classList.add('on'); } }
 function imgField(key, mw){
-  return `<div class="irow"><div class="ithumb-b"><i class="fas fa-image"></i><img class="ithumb" id="uthumb-${key}" src="" alt=""></div><div class="icol"><button class="iup" id="ubtn-${key}" type="button" onclick="g('ufile-${key}').click()"><i class="fas fa-cloud-upload-alt"></i> Subir</button><input type="file" id="ufile-${key}" accept="image/*" style="display:none" onchange="handleUpload(this,'${key}',${mw})"><span class="imeta" id="umeta-${key}"></span></div></div>`;
+  return `<div class="irow"><div class="ithumb-b"><i class="fas fa-image"></i><img class="ithumb" id="uthumb-${key}" src="" alt=""></div><div class="icol"><button class="iup" id="ubtn-${key}" type="button" onclick="g('ufile-${key}').click()"><i class="fas fa-cloud-upload-alt"></i> Subir</button><input type="file" id="ufile-${key}" accept="image/*,.heic,.heif" style="display:none" onchange="handleUpload(this,'${key}',${mw})"><span class="imeta" id="umeta-${key}"></span></div></div>`;
 }
 
 /* SETTINGS (contacto, colores, logo, nosotros, social) */
 let SETTINGS = {};
-async function fetchSettings(){ const r = await fetch('/api/settings'); SETTINGS = await r.json(); return SETTINGS; }
+async function fetchSettings(){ const r = await fetch('/api/settings'); if (!r.ok) throw new Error('No se pudo cargar el contenido. Intenta nuevamente.'); SETTINGS = await r.json(); return SETTINGS; }
 function populateSettingsForm(){
   const s = SETTINGS;
   sv('s-phone', s.phone); sv('s-email', s.email); sv('s-address', s.address);
@@ -102,13 +134,15 @@ function populateSettingsForm(){
   sv('s-aboutP1Es', s.aboutP1Es); sv('s-aboutP1En', s.aboutP1En);
   sv('s-aboutP2Es', s.aboutP2Es); sv('s-aboutP2En', s.aboutP2En);
   sv('s-statProjects', s.statProjects); sv('s-statSatisfaction', s.statSatisfaction); sv('s-statYears', s.statYears);
-  sv('s-fbUrl', s.fbUrl); sv('s-igUrl', s.igUrl); sv('s-ytUrl', s.ytUrl);
+  buildSocialEditor();
 
   g('logo-f').innerHTML = imgField('logo', 500); setThumb('logo', s.logoUrl);
   g('aImg1-f').innerHTML = imgField('aI1', 900); setThumb('aI1', s.aboutImg1);
   g('aImg2-f').innerHTML = imgField('aI2', 600); setThumb('aI2', s.aboutImg2);
 }
 async function saveSettings(){
+  let socialLinks;
+  try { socialLinks = readSocialLinks(); } catch (error) { alert(error.message); return; }
   const payload = {
     phone: gv('s-phone'), email: gv('s-email'), address: gv('s-address'),
     hoursEs: gv('s-hoursEs'), hoursEn: gv('s-hoursEn'),
@@ -121,7 +155,7 @@ async function saveSettings(){
     statProjects: parseInt(gv('s-statProjects')) || 0,
     statSatisfaction: parseInt(gv('s-statSatisfaction')) || 0,
     statYears: parseInt(gv('s-statYears')) || 0,
-    fbUrl: gv('s-fbUrl') || '#', igUrl: gv('s-igUrl') || '#', ytUrl: gv('s-ytUrl') || '#'
+    socialLinks
   };
   if (IMGS['logo']) payload.logoUrl = IMGS['logo'];
   if (IMGS['aI1']) payload.aboutImg1 = IMGS['aI1'];
@@ -133,6 +167,7 @@ async function saveSettings(){
     if (!r.ok) throw new Error('No se pudo guardar la configuración');
     SETTINGS = await r.json();
     delete IMGS['logo']; delete IMGS['aI1']; delete IMGS['aI2'];
+    g('saveHint').textContent = 'Configuración guardada y publicada.';
     showToast();
   } catch (e) { alert(e.message); }
   btn.disabled = false;
@@ -140,7 +175,7 @@ async function saveSettings(){
 
 /* HERO SLIDES */
 let SLIDES = [];
-async function fetchSlides(){ const r = await fetch('/api/hero-slides'); SLIDES = await r.json(); return SLIDES; }
+async function fetchSlides(){ const r = await fetch('/api/hero-slides'); if (!r.ok) throw new Error('No se pudo cargar el contenido. Intenta nuevamente.'); SLIDES = await r.json(); return SLIDES; }
 function slideRowHtml(s){
   const key = 'slide' + s.id;
   return `<div class="card">
@@ -155,8 +190,8 @@ function slideRowHtml(s){
       <div class="df"><label class="en">🇺🇸 Line 2 (can include HTML)</label><input type="text" class="sl-l2-en" data-id="${s.id}" value="${esc(s.line2En)}"></div>
     </div>
     <div class="fp">
-      <div class="df"><label class="es">🇪🇸 Subtítulo</label><textarea class="sl-sub-es" data-id="${s.id}" rows="2">${s.subtitleEs || ''}</textarea></div>
-      <div class="df"><label class="en">🇺🇸 Subtitle</label><textarea class="sl-sub-en" data-id="${s.id}" rows="2">${s.subtitleEn || ''}</textarea></div>
+      <div class="df"><label class="es">🇪🇸 Subtítulo</label><textarea class="sl-sub-es" data-id="${s.id}" rows="2">${esc(s.subtitleEs)}</textarea></div>
+      <div class="df"><label class="en">🇺🇸 Subtitle</label><textarea class="sl-sub-en" data-id="${s.id}" rows="2">${esc(s.subtitleEn)}</textarea></div>
     </div>
     <button type="button" class="dsave" data-save-slide="${s.id}"><i class="fas fa-save"></i>Guardar slide</button>
   </div>`;
@@ -243,7 +278,7 @@ function buildHeroAdmin(){
 
 /* SERVICIOS */
 let SERVICES = [];
-async function fetchServices(){ const r = await fetch('/api/services'); SERVICES = await r.json(); return SERVICES; }
+async function fetchServices(){ const r = await fetch('/api/services'); if (!r.ok) throw new Error('No se pudo cargar el contenido. Intenta nuevamente.'); SERVICES = await r.json(); return SERVICES; }
 function serviceRowHtml(s){
   const key = 'svc' + s.id;
   return `<div class="card">
@@ -255,12 +290,12 @@ function serviceRowHtml(s){
       <div class="df"><label class="en">🇺🇸 Title</label><input type="text" class="sv-title-en" data-id="${s.id}" value="${esc(s.titleEn)}"></div>
     </div>
     <div class="fp">
-      <div class="df"><label class="es">🇪🇸 Descripción corta (tarjeta)</label><textarea class="sv-desc-es" data-id="${s.id}" rows="2">${s.descriptionEs || ''}</textarea></div>
-      <div class="df"><label class="en">🇺🇸 Short description (card)</label><textarea class="sv-desc-en" data-id="${s.id}" rows="2">${s.descriptionEn || ''}</textarea></div>
+      <div class="df"><label class="es">🇪🇸 Descripción corta (tarjeta)</label><textarea class="sv-desc-es" data-id="${s.id}" rows="2">${esc(s.descriptionEs)}</textarea></div>
+      <div class="df"><label class="en">🇺🇸 Short description (card)</label><textarea class="sv-desc-en" data-id="${s.id}" rows="2">${esc(s.descriptionEn)}</textarea></div>
     </div>
     <div class="fp">
-      <div class="df"><label class="es">🇪🇸 Descripción detallada (modal)</label><textarea class="sv-detail-es" data-id="${s.id}" rows="4">${s.detailEs || ''}</textarea></div>
-      <div class="df"><label class="en">🇺🇸 Detailed description (modal)</label><textarea class="sv-detail-en" data-id="${s.id}" rows="4">${s.detailEn || ''}</textarea></div>
+      <div class="df"><label class="es">🇪🇸 Descripción detallada (modal)</label><textarea class="sv-detail-es" data-id="${s.id}" rows="4">${esc(s.detailEs)}</textarea></div>
+      <div class="df"><label class="en">🇺🇸 Detailed description (modal)</label><textarea class="sv-detail-en" data-id="${s.id}" rows="4">${esc(s.detailEn)}</textarea></div>
     </div>
     <button type="button" class="dsave" data-save-svc="${s.id}"><i class="fas fa-save"></i>Guardar servicio</button>
   </div>`;
@@ -350,7 +385,7 @@ function buildServicesAdmin(){
 
 /* GALERÍA (PROYECTOS) */
 let PROJECTS = [];
-async function fetchProjects(){ const r = await fetch('/api/projects'); PROJECTS = await r.json(); return PROJECTS; }
+async function fetchProjects(){ const r = await fetch('/api/projects'); if (!r.ok) throw new Error('No se pudo cargar el contenido. Intenta nuevamente.'); PROJECTS = await r.json(); return PROJECTS; }
 function projectRowHtml(p){
   const key = 'proj' + p.id;
   return `<div class="card">
@@ -365,8 +400,8 @@ function projectRowHtml(p){
       <div class="df"><label class="en">🇺🇸 Category</label><input type="text" class="pj-cat-en" data-id="${p.id}" value="${esc(p.categoryEn)}"></div>
     </div>
     <div class="fp">
-      <div class="df"><label class="es">🇪🇸 Descripción (opcional)</label><textarea class="pj-desc-es" data-id="${p.id}" rows="2">${p.descriptionEs || ''}</textarea></div>
-      <div class="df"><label class="en">🇺🇸 Description (optional)</label><textarea class="pj-desc-en" data-id="${p.id}" rows="2">${p.descriptionEn || ''}</textarea></div>
+      <div class="df"><label class="es">🇪🇸 Descripción (opcional)</label><textarea class="pj-desc-es" data-id="${p.id}" rows="2">${esc(p.descriptionEs)}</textarea></div>
+      <div class="df"><label class="en">🇺🇸 Description (optional)</label><textarea class="pj-desc-en" data-id="${p.id}" rows="2">${esc(p.descriptionEn)}</textarea></div>
     </div>
     <div class="df" style="max-width:220px"><label>Tamaño en galería</label>
       <select class="pj-cls" data-id="${p.id}">
@@ -381,9 +416,9 @@ function projectRowHtml(p){
 function bulkUploadFormHtml(){
   return `<div class="card new">
     <div class="card-new-hdr"><i class="fas fa-circle-plus"></i>Agregar fotos a la galería</div>
-    <p style="font-size:12.5px;color:var(--slate);margin:-6px 0 14px">Selecciona una o varias fotos a la vez — se suben y comprimen automáticamente. Luego edita el título, categoría y descripción de cada una en las tarjetas de abajo.</p>
+    <p style="font-size:12.5px;color:var(--slate);margin:-6px 0 14px">JPG, PNG, WebP y HEIC/HEIF de iPhone. Selecciona una o varias fotos a la vez — se suben y comprimen automáticamente. Luego edita el título, categoría y descripción de cada una en las tarjetas de abajo.</p>
     <button type="button" class="iup" id="pjBulkBtn" onclick="g('pjBulkFile').click()"><i class="fas fa-cloud-upload-alt"></i> Seleccionar fotos</button>
-    <input type="file" id="pjBulkFile" accept="image/*" multiple style="display:none">
+    <input type="file" id="pjBulkFile" accept="image/*,.heic,.heif" multiple style="display:none">
     <div id="pjBulkProgress" style="margin-top:12px;font-size:12.5px;color:var(--slate)"></div>
   </div>`;
 }
@@ -437,24 +472,31 @@ function buildGalleryAdmin(){
     const progress = g('pjBulkProgress');
     const bulkBtn = g('pjBulkBtn');
     bulkBtn.disabled = true;
-    let done = 0;
+    let done = 0, uploaded = 0;
+    const failed = [];
     for (const file of files) {
-      progress.textContent = `Subiendo ${done + 1} de ${files.length}...`;
-      const imageUrl = await compress(file, 900);
-      if (imageUrl) {
-        try {
-          await fetch('/api/projects', { method: 'POST', headers: authHeaders(true), body: JSON.stringify({ imageUrl }) });
-        } catch (e) { /* sigue con la siguiente foto */ }
-      }
+      progress.textContent = `Preparando y subiendo ${done + 1} de ${files.length}: ${file.name}`;
+      try {
+        const imageUrl = await compress(file, 900);
+        if (!imageUrl) throw new Error('No se pudo leer la imagen');
+        const response = await fetch('/api/projects', { method: 'POST', headers: authHeaders(true), body: JSON.stringify({ imageUrl }) });
+        if (!response.ok) throw new Error('No se pudo guardar la foto');
+        uploaded++;
+      } catch (error) { failed.push(file.name + ': ' + error.message); }
       done++;
     }
-    await fetchProjects(); buildGalleryAdmin(); showToast();
+    try {
+      await fetchProjects(); buildGalleryAdmin();
+      g('pjBulkProgress').textContent = `${uploaded} de ${files.length} fotos subidas.` + (failed.length ? ' No se subieron: ' + failed.join('; ') : '');
+      if (uploaded && !failed.length) showToast();
+    } catch (_) { progress.textContent = `${uploaded} fotos guardadas. No se pudo actualizar la lista; recarga el panel para verlas.`; }
+    finally { bulkBtn.disabled = false; bulkInput.value = ''; }
   });
 }
 
 /* RESEÑAS */
 let REVIEWS = [];
-async function fetchReviews(){ const r = await fetch('/api/reviews'); REVIEWS = await r.json(); return REVIEWS; }
+async function fetchReviews(){ const r = await fetch('/api/reviews'); if (!r.ok) throw new Error('No se pudo cargar el contenido. Intenta nuevamente.'); REVIEWS = await r.json(); return REVIEWS; }
 function reviewRowHtml(rv){
   return `<div class="card">
     <div class="card-hdr"><strong><span class="card-badge">${rv.position + 1}</span>${(rv.name || '').replace(/</g, '&lt;')}</strong><button type="button" class="ddel" data-del-rev="${rv.id}"><i class="fas fa-trash"></i> Eliminar</button></div>
@@ -463,8 +505,8 @@ function reviewRowHtml(rv){
       <div class="df"><label>Estrellas (1-5)</label><input type="number" min="1" max="5" class="rv-stars" data-id="${rv.id}" value="${rv.stars}"></div>
     </div>
     <div class="fp">
-      <div class="df"><label class="es">🇪🇸 Texto</label><textarea class="rv-text-es" data-id="${rv.id}" rows="3">${rv.textEs || ''}</textarea></div>
-      <div class="df"><label class="en">🇺🇸 Text</label><textarea class="rv-text-en" data-id="${rv.id}" rows="3">${rv.textEn || ''}</textarea></div>
+      <div class="df"><label class="es">🇪🇸 Texto</label><textarea class="rv-text-es" data-id="${rv.id}" rows="3">${esc(rv.textEs)}</textarea></div>
+      <div class="df"><label class="en">🇺🇸 Text</label><textarea class="rv-text-en" data-id="${rv.id}" rows="3">${esc(rv.textEn)}</textarea></div>
     </div>
     <div class="fp">
       <div class="df"><label class="es">🇪🇸 Etiqueta</label><input type="text" class="rv-label-es" data-id="${rv.id}" value="${esc(rv.labelEs)}"></div>
@@ -549,17 +591,7 @@ function buildReviewsAdmin(){
 
 /* TABS */
 function initTabs(){
-  document.querySelectorAll('.adm-tab').forEach(tab => {
-    tab.addEventListener('click', () => {
-      document.querySelectorAll('.adm-tab').forEach(t => t.classList.remove('on'));
-      document.querySelectorAll('.adm-panel').forEach(p => p.classList.remove('on'));
-      tab.classList.add('on');
-      const panel = g('p-' + tab.dataset.p);
-      panel.classList.add('on');
-      g('settingsSaveBar').style.display = panel.classList.contains('settings-panel') ? 'block' : 'none';
-      window.scrollTo({ top: 0, behavior: 'instant' in window ? 'instant' : 'auto' });
-    });
-  });
+  document.querySelectorAll('.adm-tab').forEach(tab => tab.addEventListener('click', () => activatePanel(tab.dataset.p)));
 }
 
 /* LOGIN / DASHBOARD SWITCH */
@@ -570,23 +602,30 @@ async function tryLogin(){
   btn.disabled = false;
   if (result.ok) { showDashboard(); }
   else {
-    err.innerHTML = `<i class="fas fa-exclamation-circle"></i> ${result.error}`;
+    err.textContent = result.error;
     err.style.display = 'block';
     g('lPw').value = '';
     setTimeout(() => err.style.display = 'none', 6000);
   }
 }
 
+let dashboardBound = false;
 async function initDashboard(){
-  await fetchSettings(); populateSettingsForm();
-  await fetchSlides(); buildHeroAdmin();
-  await fetchServices(); buildServicesAdmin();
-  await fetchProjects(); buildGalleryAdmin();
-  await fetchReviews(); buildReviewsAdmin();
-  initTabs();
-  g('settingsSaveBar').style.display = 'none';
-  g('saveSettingsBtn').addEventListener('click', saveSettings);
-  g('dLogout').addEventListener('click', logout);
+  if (!dashboardBound) {
+    initTabs(); initDashboardTools();
+    g('saveSettingsBtn').addEventListener('click', saveSettings);
+    g('dLogout').addEventListener('click', logout);
+    dashboardBound = true;
+  }
+  const status = g('loadStatus'); status.hidden = false; status.textContent = 'Cargando el contenido de tu sitio…';
+  try {
+    await Promise.all([fetchSettings(), fetchSlides(), fetchServices(), fetchProjects(), fetchReviews()]);
+    populateSettingsForm(); buildHeroAdmin(); buildServicesAdmin(); buildGalleryAdmin(); buildReviewsAdmin();
+    enhanceEditors(); renderOverview(); status.hidden = true;
+  } catch (error) {
+    status.textContent = error.message + ' ';
+    const retry = document.createElement('button'); retry.textContent = 'Reintentar'; retry.className = 'text-button'; retry.onclick = initDashboard; status.append(retry);
+  }
 }
 
 function showDashboard(){

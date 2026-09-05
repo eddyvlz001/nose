@@ -7,7 +7,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;600;700;800;900&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-<link rel="stylesheet" href="/css/style.css">
+
 <link rel="stylesheet" href="/css/admin.css">
 </head>
 <body>
@@ -29,7 +29,7 @@
 <!-- DASHBOARD -->
 <div id="dashView" style="display:none">
   <div class="adm-topbar">
-    <div class="adm-brand">MRL<span>.</span> Admin<small>Editor de Sitio</small></div>
+    <button class="menu-toggle" id="menuToggle" aria-label="Abrir navegación" aria-expanded="false" aria-controls="adminNav">☰</button><div class="adm-brand">MRL<span>.</span> <small>WOODWORKING · ADMINISTRACIÓN</small></div>
     <div class="adm-actions">
       <a class="adm-btn-ghost" href="/" target="_blank"><i class="fas fa-arrow-up-right-from-square"></i> Ver sitio</a>
       <button class="adm-btn-danger" id="dLogout"><i class="fas fa-sign-out-alt"></i> Salir</button>
@@ -37,29 +37,43 @@
   </div>
 
   <div class="adm-shell">
-    <div class="adm-side">
+    <nav class="adm-side" id="adminNav" aria-label="Administración"><div class="adm-side-grp">Tu espacio de trabajo</div><button type="button" class="adm-tab on" data-p="inicio"><i class="fas fa-house"></i> Resumen</button>
       <div class="adm-side-grp">Contenido bilingüe</div>
-      <div class="adm-tab on" data-p="hero"><i class="fas fa-panorama"></i> Hero</div>
-      <div class="adm-tab" data-p="servicios"><i class="fas fa-hammer"></i> Servicios</div>
-      <div class="adm-tab" data-p="galeria"><i class="fas fa-images"></i> Galería</div>
-      <div class="adm-tab" data-p="nosotros"><i class="fas fa-users"></i> Nosotros</div>
-      <div class="adm-tab" data-p="resenas"><i class="fas fa-star"></i> Reseñas</div>
+      <button type="button" class="adm-tab" data-p="hero"><i class="fas fa-panorama"></i> Portada</button>
+      <button type="button" class="adm-tab" data-p="servicios"><i class="fas fa-hammer"></i> Servicios</button>
+      <button type="button" class="adm-tab" data-p="galeria"><i class="fas fa-images"></i> Galería</button>
+      <button type="button" class="adm-tab" data-p="nosotros"><i class="fas fa-users"></i> Nosotros</button>
+      <button type="button" class="adm-tab" data-p="resenas"><i class="fas fa-star"></i> Reseñas</button>
 
       <div class="adm-side-grp">Diseño</div>
-      <div class="adm-tab" data-p="colores"><i class="fas fa-palette"></i> Colores</div>
-      <div class="adm-tab" data-p="logo"><i class="fas fa-image"></i> Logo</div>
+      <button type="button" class="adm-tab" data-p="colores"><i class="fas fa-palette"></i> Colores</button>
+      <button type="button" class="adm-tab" data-p="logo"><i class="fas fa-image"></i> Logo</button>
 
       <div class="adm-side-grp">Configuración</div>
-      <div class="adm-tab" data-p="general"><i class="fas fa-address-card"></i> Contacto</div>
-      <div class="adm-tab" data-p="social"><i class="fas fa-share-nodes"></i> Social</div>
-    </div>
+      <button type="button" class="adm-tab" data-p="general"><i class="fas fa-address-card"></i> Contacto</button>
+      <button type="button" class="adm-tab" data-p="social"><i class="fas fa-share-nodes"></i> Redes sociales</button>
+    </nav>
 
-    <div class="adm-main">
+    <main class="adm-main" id="adminMain">
 
+      <div id="loadStatus" role="status" hidden></div>
+      <section class="adm-panel on" id="p-inicio" aria-label="Resumen">
+        <div class="eyebrow">TU SITIO, EN UN SOLO LUGAR</div>
+        <div class="welcome"><div><h1>Bienvenido a tu panel</h1><p>Da vida a tus proyectos. Mantén tu web al día.</p></div><span class="workspace-badge">MRL Woodworking</span></div>
+        <div id="overviewStats" class="stats-grid"></div>
+        <div class="overview-grid"><section class="overview-card"><div class="section-heading"><h2>¿Qué quieres hacer hoy?</h2><span>Accesos rápidos</span></div>
+        <div class="quick-grid">
+        <button data-go="galeria"><span class="quick-icon">＋</span><strong>Subir proyectos</strong><span>Muestra tus últimos trabajos</span></button>
+        <button data-go="hero"><span class="quick-icon">▧</span><strong>Editar portada</strong><span>Actualiza la primera impresión</span></button>
+        <button data-go="servicios"><span class="quick-icon">◇</span><strong>Gestionar servicios</strong><span>Cuenta lo que puedes ofrecer</span></button>
+        <button data-go="general"><span class="quick-icon">↗</span><strong>Actualizar contacto</strong><span>Facilita que te encuentren</span></button>
+        </div></section><section class="overview-card guide"><div class="eyebrow">ASÍ DE SENCILLO</div><h2>Tu próxima actualización</h2><ol><li><strong>Elige una sección</strong><span>Usa el menú o un acceso rápido.</span></li><li><strong>Edita tu contenido</strong><span>Completa los textos en español e inglés.</span></li><li><strong>Guarda y revisa</strong><span>Los cambios se publican al guardar. Abre «Ver sitio» para revisarlos.</span></li></ol></section></div>
+        <section class="overview-card"><div class="section-heading"><h2>Proyectos de tu galería</h2><button class="text-button" data-go="galeria">Gestionar galería →</button></div><div id="recentProjects" class="project-preview-grid"></div></section>
+      </section>
       <!-- HERO -->
-      <div class="adm-panel on" id="p-hero">
-        <div class="adm-panel-title"><i class="fas fa-panorama"></i>Slides del Hero</div>
-        <p class="adm-panel-sub">Agrega, edita o elimina las imágenes principales que rotan en la portada. Escribe cada texto en español 🇪🇸 e inglés 🇺🇸 — cada slide se guarda al instante.</p>
+      <div class="adm-panel" id="p-hero">
+        <div class="adm-panel-title"><i class="fas fa-panorama"></i>Imágenes de portada</div>
+        <p class="adm-panel-sub">Agrega, edita o elimina las imágenes principales que rotan en la portada. Escribe cada texto en español 🇪🇸 e inglés 🇺🇸 — pulsa Guardar en la imagen que hayas editado.</p>
         <div id="hero-f"></div>
       </div>
 
@@ -73,7 +87,7 @@
       <!-- GALERIA -->
       <div class="adm-panel" id="p-galeria">
         <div class="adm-panel-title"><i class="fas fa-images"></i>Galería de Proyectos</div>
-        <p class="adm-panel-sub">Imágenes comprimidas automáticamente. Cada proyecto se guarda al instante y se ve para todos los visitantes, en el idioma que hayan elegido.</p>
+        <p class="adm-panel-sub">Imágenes comprimidas automáticamente. Las fotos nuevas se publican al subirlas. Para actualizar sus textos, pulsa Guardar proyecto.</p>
         <div id="gal-f"></div>
       </div>
 
@@ -151,21 +165,24 @@
       <!-- SOCIAL -->
       <div class="adm-panel settings-panel" id="p-social">
         <div class="adm-panel-title"><i class="fas fa-share-nodes"></i>Redes Sociales</div>
-        <div class="df"><label>Facebook URL</label><input type="text" id="s-fbUrl"></div>
-        <div class="df"><label>Instagram URL</label><input type="text" id="s-igUrl"></div>
-        <div class="df"><label>YouTube URL</label><input type="text" id="s-ytUrl"></div>
+        <p class="adm-panel-sub">Agrega una red, elige su icono y pega el enlace de tu perfil. Guarda los cambios para publicarlos.</p>
+        <div id="socialRows"></div>
+        <button type="button" class="dsave" id="addSocialBtn">＋ Agregar red social</button>
       </div>
 
-      <div id="settingsSaveBar">
+      <div id="settingsSaveBar" style="display:none"><span id="saveHint" role="status">Guarda para publicar tus cambios de configuración.</span>
         <button class="dsave" id="saveSettingsBtn"><i class="fas fa-save"></i>Guardar Cambios</button>
       </div>
 
-    </div>
+    </main>
   </div>
 </div>
 
-<div id="toast"><i class="fas fa-check-circle"></i>¡Cambios guardados!</div>
+<div id="toast" role="status" aria-live="polite"><i class="fas fa-check-circle"></i>¡Cambios guardados!</div>
 
+<script src="/js/icon-catalog.js"></script>
+<script src="/js/admin-icons.js"></script>
 <script src="/js/admin.js"></script>
+<script src="/js/dashboard.js"></script>
 </body>
 </html>
